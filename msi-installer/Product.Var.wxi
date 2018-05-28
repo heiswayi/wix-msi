@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+    <!-- #### USER-DEFINED VARIABLES THAT DEFINED DURING BUILD #### -->
+    <?define AppVersion="$(var.BUILD_VERSION)" ?>
+    <!-- Upgrade code HAS to be the same for all updates. Once you've chosen it, don't change it. -->
+    <?define UpgradeCode="$(var.BUILD_GUID)" ?>
+    <!-- Project directory -->
+    <?define ProjectDir="$(var.BUILD_PROJECTDIR)" ?>
+
+    <!-- #### USER-DEFINED VARIABLES #### -->
+    <!-- Set to 1 if you want to enable major upgrade -->
+    <?define EnableMajorUpgrade="1" ?>
+    <?define AppExeName="MiniAppKiller.exe" ?>
+    <!-- App Info -->
+    <!-- The URL for Add/Remove Programs -->
+    <?define InfoURL="https://heiswayi.nrird.com/" ?>
+    <!-- If your app supports both platform (x86 & x64), you have to create separate MSI. -->
+    <?define Platform="x86" ?>
+    <!-- App Icon -->
+    <?define AppIconSource="images\app.ico" ?>
+    <!-- Other resources -->
+    <?define ImageTopBannerSource="images\TopBanner.bmp" ?>
+    <?define ImageDialogSource="images\Dialog.bmp" ?>
+    <!-- GUIDs -->
+    <?define GuidInstallLocation="3F638FF4-C84D-480F-83B8-31CCE0C10617" ?>
+    <?define GuidApplicationShortcut="433B5301-96B9-4FD4-BD86-2A54FB5B9570" ?>
+    <?define GuidApplicationShortcutDesktop="00EA4184-52A8-478D-8A89-47892454B0DD" ?>
+    <?define GuidProductId="9996A526-5535-4DEB-BB56-B4D84BA96E38" ?>
+
+    <!-- #### DO NOT EDIT ANYTHING BELOW THIS LINE #### -->
+    <?if $(var.EnableMajorUpgrade) = 1 ?>
+        <?define ProductId = "*" ?>
+    <?else ?>
+        <?define ProductId = "$(var.GuidProductId)" ?>
+    <?endif ?>
+    <?if $(var.Platform) = x64 ?>
+        <?define Win64 = "yes" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+        <?define MainExeSourcePath = "$(var.ProjectDir)\$(var.AppExeName)" ?>
+    <?else ?>
+        <?define Win64 = "no" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+        <?define MainExeSourcePath = "$(var.ProjectDir)\$(var.AppExeName)" ?>
+    <?endif ?>
+</Include>

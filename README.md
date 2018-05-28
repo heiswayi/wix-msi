@@ -1,1 +1,1 @@
-# wix-msi
+Blog post: [Create a basic MSI installer using WiX Toolset](https://heiswayi.nrird.com/2018/create-basic-msi-installer-using-wix-toolset)
