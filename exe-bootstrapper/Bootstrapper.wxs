@@ -1,0 +1,71 @@
+<Wix
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <Bundle Name="MiniAppKiller Bundle" 
+        Version="!(bind.packageVersion.MainPackage)" 
+        Manufacturer="Heiswayi Nrird" 
+        UpgradeCode="56888B11-D5D0-4068-8E94-39E696DAD1D4" 
+        Copyright="(C) 2018 Heiswayi Nrird" 
+        IconSourceFile="images/app.ico" 
+        AboutUrl="https://heiswayi.nrird.com"
+        Compressed="yes">
+
+        <!-- Variable to set default InstallFolder -->
+        <Variable Name="InstallFolder" 
+            Type="string" 
+            Value="[ProgramFilesFolder]Heiswayi Nrird\MiniAppKiller\" />
+        <!-- Variable to set default checkbox value -->
+        <Variable Name="AddDesktopShortcut" 
+            Type="numeric" 
+            Value="1" />
+        <!-- Variable to pass value to msi-->
+        <Variable Name="AddDesktopShortcutMsiVariable" 
+            bal:Overridable="yes" 
+            Value="[AddDesktopShortcut]" />
+        
+        <!-- Layout setup -->
+        <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+            <bal:WixStandardBootstrapperApplication 
+                LicenseUrl="https://heiswayi.nrird.com"
+                LogoFile="bootstrapper_res/banner.png"
+                ThemeFile="bootstrapper_res/ClassicTheme.xml"
+                LocalizationFile="bootstrapper_res/ClassicTheme.wxl"
+                LicenseFile="app\Eula-en.rtf"
+                SuppressOptionsUI="yes" />
+        </BootstrapperApplicationRef>
+
+        <util:RegistrySearch Root="HKLM" 
+            Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\Full" 
+            Value="Version" 
+            Variable="Net4FullVersion" />
+        <util:RegistrySearch Root="HKLM" 
+            Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\Full" 
+            Value="Version" 
+            Variable="Net4x64FullVersion" 
+            Win64="yes" />
+        
+        <Chain DisableSystemRestore="yes">
+            <ExePackage Id="Net471" 
+                Name="Microsoft .NET Framework 4.7.1 Web Installer" 
+                Cache="no" 
+                Compressed="yes" 
+                PerMachine="yes" 
+                Permanent="yes" 
+                Vital="yes"
+                InstallCommand="/norestart"
+                SourceFile="prereq\NDP471-KB4033344-Web.exe"
+                DetectCondition="(Net4FullVersion = &quot;4.7.2558&quot;) AND (NOT VersionNT64 OR (Net4x64FullVersion = &quot;4.7.2558&quot;))"
+                InstallCondition="(VersionNT >= v6.0 OR VersionNT64 >= v6.0) AND (NOT (Net4FullVersion = &quot;4.7.2558&quot; OR Net4x64FullVersion = &quot;4.7.2558&quot;))"/>
+            <RollbackBoundary />
+            <MsiPackage Id="MainPackage" 
+                SourceFile="setup-1.0.msi" 
+                DisplayInternalUI="yes" 
+                Compressed="yes" 
+                Vital="yes">
+                <MsiProperty Name="INSTALLDIR" Value="[InstallFolder]" />
+                <MsiProperty Name="AddDesktopShortcut" Value="[AddDesktopShortcutMsiVariable]" />
+            </MsiPackage>
+        </Chain>
+    </Bundle>
+</Wix>
