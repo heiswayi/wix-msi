@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <?define MyProductName = "ExampleApp" ?>
+    <?define MyProductVersion = "2.0.0" ?>
+    <?define MyProductCode = "*" ?>
+    <?define MyUpgradeCode = "DA3EEBC7-5812-4380-BDAE-1605417230CB" ?>
+    <?define ManufacturerName = "Heiswayi Nrird" ?>
+    <?define ProductDescription = "Demo installer for WiX basics" ?>
+    <?define ProductCopyright = "(c) 2018 $(var.ManufacturerName)" ?>
+    <?define MainProgramFileFullname = "ExampleApp.exe" ?>
+    <?define GuidProgramShortcut = "9ACF08F5-CFF4-43C1-84F9-418ADAAD772D" ?>
+    <?define GuidProgramShortcut64 = "CEA4CD03-0819-4A30-903A-22E09B254F04" ?>
+    <?define LicenseEulaFile = "License.rtf" ?>
+    <?define BannerBmp = "banner.bmp" ?>
+    <?define DialogBmp = "dialog.bmp" ?>
+    <?define AppIcon = "appIcon.ico" ?>
+    <Product Id="$(var.MyProductCode)" Name="$(var.MyProductName)" Language="1033" Version="$(var.MyProductVersion)" Manufacturer="$(var.ManufacturerName)" UpgradeCode="$(var.MyUpgradeCode)">
+        <Package Compressed="yes" InstallScope="perMachine" Manufacturer="$(var.ManufacturerName)" Description="$(var.ProductDescription)" Comments="$(var.ProductCopyright)" />
+        <MediaTemplate EmbedCab="yes" />
+        <Upgrade Id="$(var.MyUpgradeCode)">
+            <UpgradeVersion Minimum="$(var.MyProductVersion)" OnlyDetect="yes" IncludeMinimum="yes" Property="DOWNGRADE_DETECTED" />
+            <UpgradeVersion IncludeMinimum="no" Maximum="$(var.MyProductVersion)" IncludeMaximum="no" MigrateFeatures="yes" Property="UPGRADE_DETECTED" />
+        </Upgrade>
+        <WixVariable Id="WixUILicenseRtf" Value="$(var.LicenseEulaFile)" />
+        <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
+        <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+        <Icon Id="icon.ico" SourceFile="$(var.AppIcon)"/>
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+        <!-- If using: <UIRef Id="WixUI_Advanced"/> -->
+        <!--
+        <Property Id="ApplicationFolderName" Value="$(var.ManufacturerName)\$(var.MyProductName)" />
+        <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+        -->
+        <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallInitialize" />
+        </InstallExecuteSequence>
+        <Condition Message="A later version of [ProductName] is already installed. Setup will now exit.">NOT DOWNGRADE_DETECTED</Condition>
+        <PropertyRef Id="NETFRAMEWORK45" />
+        <Condition Message="[ProductName] requires .NET Framework 4.7.1. Please install the .NET Framework then run this installer again. Setup will now exit.">
+            <![CDATA[Installed OR (NETFRAMEWORK45 AND NETFRAMEWORK45 >= "#461308")]]>
+        </Condition>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="MyProgramFiles" Name="$(var.ManufacturerName)">
+                    <Directory Id="APPLICATIONFOLDER" Name="$(var.MyProductName)"></Directory>
+                </Directory>
+                <Directory Id="ProgramMenuFolder" Name="$(var.ManufacturerName)">
+                    <Directory Id="ApplicationShortcutFolder" Name="$(var.MyProductName)"></Directory>
+                </Directory>
+            </Directory>
+        </Directory>
+        <DirectoryRef Id="ApplicationShortcutFolder">
+            <Component Id="APPSHORTCUT64_comp" Guid="$(var.GuidProgramShortcut64)">
+                <Condition>VersionNT64</Condition>
+                <Shortcut Id="ApplicationStartMenuShortcut64" Name="$(var.MyProductName)" Description="$(var.ProductDescription)" Target="[APPLICATIONFOLDER]$(var.MainProgramFileFullname)" WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                <Shortcut Id="UninstallAppShortcut64" Name="Uninstall $(var.MyProductName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
+                <RemoveFolder Id="CleanUpShortCut64" Directory="ApplicationShortcutFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\$(var.ManufacturerName)\$(var.MyProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+            <Component Id="APPSHORTCUT_comp" Guid="$(var.GuidProgramShortcut)">
+                <Condition>NOT VersionNT64</Condition>
+                <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.MyProductName)" Description="$(var.ProductDescription)" Target="[APPLICATIONFOLDER]$(var.MainProgramFileFullname)" WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                <Shortcut Id="UninstallAppShortcut" Name="Uninstall $(var.MyProductName)" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]"/>
+                <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationShortcutFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\$(var.ManufacturerName)\$(var.MyProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+        </DirectoryRef>
+        <Feature Id="ProgramFeature" Title="Program Files" Level="1">
+            <ComponentGroupRef Id="APPLICATIONFOLDER_comp" />
+        </Feature>
+        <Feature Id="ShortcutFeature" Title="Shortcuts" Level="1">
+            <ComponentRef Id="APPSHORTCUT64_comp" />
+            <ComponentRef Id="APPSHORTCUT_comp" />
+        </Feature>
+        <UIRef Id="WixUI_FeatureTree"/>
+    </Product>
+</Wix>
