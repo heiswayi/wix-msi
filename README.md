@@ -1,6 +1,6 @@
 Related articles:
-- [Creating a simpler MSI setup using WiX Toolset](https://heiswayi.nrird.com/2018/creating-simpler-msi-setup-using-wix-toolset)
-- [Creating MSI bootstrapper (setup.exe) using WiX bootstrapper (Burn)](https://heiswayi.nrird.com/2018/creating-msi-bootstrapper-using-wix-bootstrapper-burn)
-- [Creating Windows Installer package with WiX Toolset](https://heiswayi.nrird.com/2018/creating-windows-installer-package-with-wix-toolset)
+- [Step-by-step to create a simpler MSI setup with WiX Toolset](https://heiswayi.nrird.com/simpler-msi-setup-with-wix-toolset)
+- [Installer bootstrapping with Burn - a WiX bootstrapper](https://heiswayi.nrird.com/installer-bootstrapping-with-burn)
+- [Get started with WiX Toolset](https://heiswayi.nrird.com/get-started-with-wix-toolset)
 
 Check out my blog at [**https://heiswayi.nrird.com**](https://heiswayi.nrird.com) for more articles.
